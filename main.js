@@ -28,7 +28,11 @@ scoreRightWrist = 0;
 //Define a variable to hold the status of the game
 game_status = "";
 
- 
+function preload() {
+  missed = loadSound("missed.wav");
+  ball_touch = loadSound("ball_touch_paddel.wav");
+  
+}
 
 function setup(){
 var canvas =  createCanvas(700,600);
@@ -56,6 +60,12 @@ function gotPoses(results)
     scoreRightWrist =  results[0].pose.keypoints[10].score;
     console.log(scoreRightWrist);
   }
+}
+
+function restart() {
+  pcscore = 0;
+  playerscore = 0;
+  loop();
 }
 
 function startGame()
@@ -168,11 +178,13 @@ function move(){
    }
   if (ball.x-2.5*ball.r/2< 0){
   if (ball.y >= paddle1Y&& ball.y <= paddle1Y + paddle1Height) {
+    ball_touch.play();
     ball.dx = -ball.dx+0.5; 
     
   }
   else{
     pcscore++;
+    missed.play();
     
     reset();
     navigator.vibrate(100);
@@ -186,7 +198,7 @@ if(pcscore ==4){
     stroke("white");
     textSize(25);
     text("Game Over!",width/2,height/2);
-    text("Reload the page!",width/2,height/2+30)
+    text("Press The Restart Button To Play Again",width/2,height/2+30)
     noLoop();
     pcscore = 0;
  }
